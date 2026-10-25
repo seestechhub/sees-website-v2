@@ -1,0 +1,24 @@
+{
+  "name": "@sees/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3108",
+    "build": "next build --webpack",
+    "start": "next start --port 3108",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.2.6",
+    "@fontsource-variable/oswald": "^5.2.6",
+    "lucide-react": "^0.546.0",
+    "next": "16.4.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0"
+  }
+}
