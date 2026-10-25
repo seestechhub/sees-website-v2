@@ -1,0 +1,62 @@
+# Deployment template only. No services are created by saving this file.
+# Review paid plans/region with the owners before importing it into Render.
+services:
+  - type: web
+    name: sees-api
+    runtime: node
+    plan: 0.5c-512mb
+    region: frankfurt
+    buildCommand: npm ci --include=dev --workspace @sees/api --include-workspace-root && node node_modules/typescript/bin/tsc -p apps/api/tsconfig.json
+    startCommand: node apps/api/dist/server.js
+    healthCheckPath: /ready
+    autoDeployTrigger: off
+    envVars:
+      - key: NODE_VERSION
+        value: 22.19.0
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sees-postgres
+          property: connectionString
+      - key: WEB_ORIGIN
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+  - type: worker
+    name: sees-worker
+    runtime: node
+    plan: 0.5c-512mb
+    region: frankfurt
+    buildCommand: npm ci --include=dev --workspace @sees/api --include-workspace-root && node node_modules/typescript/bin/tsc -p apps/api/tsconfig.json
+    startCommand: node apps/api/dist/worker.js
+    autoDeployTrigger: off
+    envVars:
+      - key: NODE_VERSION
+        value: 22.19.0
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sees-postgres
+          property: connectionString
+      - key: WEB_ORIGIN
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
+      - key: MAIL_WEBHOOK_URL
+        sync: false
+      - key: MAIL_WEBHOOK_SECRET
+        sync: false
+databases:
+  - name: sees-postgres
+    plan: 0.1c-256mb
+    region: frankfurt
+    postgresMajorVersion: "16"
+    databaseName: sees
+    user: sees_owner
+    ipAllowList: []
+
+
