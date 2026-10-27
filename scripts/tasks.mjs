@@ -19,7 +19,8 @@ switch (process.argv[2]) {
     await run('node_modules/next/dist/bin/next', ['build', '--webpack'], resolve(root, 'apps/web'));
     break;
   case 'test':
-    await run('node_modules/tsx/dist/cli.mjs', ['--test', 'apps/api/test/integration.test.ts']);
+    await run('node_modules/tsx/dist/cli.mjs', ['--tsconfig', 'apps/web/tsconfig.json', '--test', 'apps/web/test/ui.test.tsx']);
+    await run('node_modules/tsx/dist/cli.mjs', ['--test', 'apps/api/test/radar.test.ts', 'apps/api/test/integration.test.ts']);
     break;
   default: throw new Error('Choose build, typecheck or test.');
 }
