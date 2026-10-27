@@ -1,0 +1,21 @@
+.radar-page{background:var(--background);color:var(--foreground);padding-bottom:60px}
+.radar-board{min-width:0}.radar-intro{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}.radar-hint{font-size:13px;color:var(--muted-foreground);line-height:1.7}
+.radar-tabs{display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--border);padding-bottom:10px}
+.radar-tabs button{border:1px solid var(--border);background:var(--card);color:var(--foreground);padding:13px 18px;white-space:nowrap;border-radius:6px;cursor:pointer;font:inherit;font-size:14px}
+.radar-tabs button[aria-selected=true]{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
+.radar-page :focus-visible{outline:3px solid var(--info);outline-offset:3px}
+.radar-filters{display:flex;align-items:end;flex-wrap:wrap;gap:16px;margin:24px 0}
+.radar-filters .field{flex:1;min-width:180px}.radar-filters .field:first-child{flex:2}.radar-filters .button{min-height:48px}
+.radar-check{display:flex;align-items:center;gap:8px;min-height:48px;font-size:14px}.radar-check input{width:18px;height:18px}
+.radar-count{font-size:13px;margin:14px 0;color:var(--muted-foreground)}
+.radar-table-scroll{overflow:auto;max-height:70vh;border:1px solid var(--border);border-radius:8px;background:var(--card)}
+.radar-table{min-width:1200px;width:100%;border-collapse:separate;border-spacing:0;margin:0}
+.radar-table caption{text-align:left;padding:12px 16px}.radar-table thead th{position:sticky;top:0;background:var(--secondary);color:var(--foreground);z-index:1}
+.radar-table td{white-space:normal;font-size:14px;vertical-align:top;padding:18px 14px;min-width:120px;border-bottom:1px solid var(--border)}
+.radar-table td:nth-child(2){min-width:220px;max-width:300px}.radar-table a{color:var(--brand);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.radar-table .radar-notes{min-width:260px;max-width:340px;overflow-wrap:anywhere;white-space:pre-line}.radar-notes small{display:block;color:var(--muted-foreground);margin-top:10px}
+.radar-table select{min-width:190px;padding:10px;border:1px solid var(--input);border-radius:4px;background:var(--card);color:var(--foreground);font:inherit}
+.radar-badge{display:inline-block;white-space:nowrap;border:1px solid currentColor;border-radius:20px;padding:4px 9px;font-size:12px;font-weight:600;color:var(--success)}
+.radar-badge.closed{color:var(--muted-foreground)}.radar-badge.soon{color:var(--info)}.radar-badge.urgent{color:var(--destructive)}
+.radar-footnote{margin-top:20px}.radar-page .notice{margin-bottom:20px}.radar-page .notice a{text-decoration:underline}
+@media(max-width:600px){.radar-filters .field{flex-basis:100%;min-width:0}.radar-filters{gap:12px}.radar-table-scroll{max-height:65vh}.radar-tabs button{font-size:13px;padding:12px}.radar-page .page-heading{padding-top:40px;padding-bottom:30px}}
