@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/oswald';
 import './globals.css';
+import './ui.css';
 
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.SITE_URL || 'http://localhost:3108'),

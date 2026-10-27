@@ -1,1 +1,5 @@
 :root{--background:#ffffff;--foreground:#0f0f0f;--card:#ffffff;--brand:#013f31;--brand-light:#95fde2;--secondary:#e8fff7;--secondary-subtle:#f7faf8;--muted-foreground:#5d6c65;--border:#dce6df;--input:#c5d5cc;--warning:#ffb703;--destructive:#a32332;--destructive-light:#fff1f2;--on-brand:#ffffff;--text-on-brand:#c5e0d5;--border-on-brand:rgba(149,253,226,.2);--shadow:rgba(1,63,49,.12);--success:#176249;--info:#215f76}
+
+@media(prefers-color-scheme:dark){.radar-page{--background:#101b17;--foreground:#edf8f2;--card:#17251f;--brand:#95fde2;--on-brand:#013f31;--secondary:#22382d;--secondary-subtle:#192b22;--muted-foreground:#b3c8bc;--border:#405c4e;--input:#617c6d;--success:#a5e6bb;--info:#a8d8ef;--destructive:#ffb5bd;--destructive-light:#382029}}
+
+:root,.radar-page{--brand-hover:color-mix(in srgb,var(--brand) 85%,var(--foreground))}
