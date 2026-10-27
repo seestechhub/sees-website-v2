@@ -9,6 +9,7 @@ import { registration, password, levelResourcePolicy as contentSchema, kind } fr
 import { loadIdentity, requireIdentity } from './session.js';
 import { HttpError, limit } from './http.js';
 import { newsletter } from './newsletter.js';
+import { radar, radarAdmin } from './radar.js';
 const ok = { message: 'If the details match an account, check your personal email for the next step.' };
 const app = express();
 app.disable('x-powered-by');
@@ -19,6 +20,8 @@ app.get('/health', (_req, res) => res.json({ status: 'ok', service: 'sees-api' }
 app.get('/ready', async (_req, res) => { await pool.query('SELECT id FROM members LIMIT 0'); await pool.query('SELECT id FROM subscriptions LIMIT 0'); res.json({ status: 'ready' }); });
 app.get('/v1/policy', (_req, res) => res.json(policy));
 app.use(loadIdentity);
+app.use('/v1/radar', radar);
+app.use('/v1/admin/radar', radarAdmin);
 app.use('/v1/newsletter', newsletter);
 app.post('/v1/auth/register', async (req, res) => {
     const input = registration.parse(req.body);

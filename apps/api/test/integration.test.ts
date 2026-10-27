@@ -1,3 +1,4 @@
+import type { Opportunity } from '../../web/src/lib/radar.js';
 import { before, after, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
@@ -14,7 +15,7 @@ const target = new URL(config.DATABASE_URL);
 if (config.NODE_ENV !== 'test' || !['localhost', '127.0.0.1'].includes(target.hostname) || target.pathname !== '/sees_platform_test') {
     throw new Error('Tests require NODE_ENV=test and local database sees_platform_test.');
 }
-const tables = 'subscriptions, outbox, audit_events, content_revisions, content, account_tokens, sessions, rate_windows, members, admins';
+const tables = 'radar_opportunities, subscriptions, outbox, audit_events, content_revisions, content, account_tokens, sessions, rate_windows, members, admins';
 const pass = 'A test-only phrase 73!';
 const changedPass = 'A different test phrase 91!';
 const member = { name: 'Test Member', matric: '290403999', email: 'member@example.test', password: pass, consent: true };
@@ -168,6 +169,43 @@ test('scheduler publishes due content once and never publishes a cancelled sched
     assert.equal((await pool.query("SELECT version FROM content WHERE slug='test-scheduled'")).rows[0].version, 2);
     assert.equal((await pool.query('SELECT COUNT(*)::INTEGER AS n FROM outbox')).rows[0].n, oldMailCount, 'Publishing must not trigger a newsletter send');
 });
+
+test('RADAR is public, drafts are private, edits are authorized, versioned and audited', async () => {
+    const listing = { category: 'scholarships', organisation: 'Integration fixture', title: 'RADAR test only', kind: 'Undergraduate', opens: '2026-01-01', closes: null, visa: 'unknown', notes: '<script>plain text</script>', link: 'https://example.test/apply', last_verified: null, status: 'draft' };
+    await request(app).get('/v1/admin/radar').expect(401);
+    await request(app).post('/v1/admin/radar').send(listing).expect(401);
+    const ordinaryMember = memberToken;
+    await request(app).post('/v1/admin/radar').set(bearer(ordinaryMember)).send(listing).expect(401);
+    const created = (await request(app).post('/v1/admin/radar').set(bearer(editorToken)).send(listing).expect(201)).body;
+    assert.equal(created.opens, '2026-01-01');
+    assert.equal(created.version, 1);
+    assert.equal((await request(app).get('/v1/radar').expect(200)).body.some((x: Opportunity) => x.id === created.id), false);
+    await request(app).get('/v1/admin/radar/' + created.id).expect(401);
+    await request(app).put('/v1/admin/radar/' + created.id).send({ ...listing, version: 1 }).expect(401);
+    await request(app).put('/v1/admin/radar/' + created.id).set(bearer(editorToken)).send({ ...listing, status: 'published', version: 1 }).expect(400);
+    const published = { ...listing, status: 'published', last_verified: '2026-01-01', version: 1 };
+    await request(app).put('/v1/admin/radar/' + created.id).set(bearer(editorToken)).send(published).expect(200);
+    const publicItem = (await request(app).get('/v1/radar').expect(200)).body.find((x: Opportunity) => x.id === created.id);
+    assert.equal(publicItem.title, listing.title);
+    assert.equal(publicItem.notes, listing.notes);
+    assert.equal(publicItem.last_verified, '2026-01-01');
+    assert.equal(publicItem.version, undefined);
+    await request(app).put('/v1/admin/radar/' + created.id).set(bearer(editorToken)).send(published).expect(409);
+    await request(app).put('/v1/admin/radar/' + created.id).set(bearer(editorToken)).send({ ...published, status: 'archived', version: 2 }).expect(200);
+    assert.equal((await request(app).get('/v1/radar').expect(200)).body.some((x: Opportunity) => x.id === created.id), false);
+    const events = (await pool.query("SELECT action,metadata FROM audit_events WHERE target_id=$1 ORDER BY created_at", [created.id])).rows;
+    assert.deepEqual(events.map(x => x.action), ['radar.created', 'radar.updated', 'radar.updated']);
+    assert.equal(events[1].metadata.before.version, 1);
+    assert.equal(events[1].metadata.after.version, 2);
+});
+
+test('RADAR rejects invalid dates, unsafe links and invalid categories', async () => {
+    const listing = { category: 'uk', organisation: 'Integration fixture', title: 'Test only', kind: 'Summer', opens: '2026-01-01', closes: null, visa: 'unknown', notes: '', link: 'https://example.test/apply', last_verified: '2026-01-01', status: 'published' };
+    for (const change of [{ opens: '2026-02-30' }, { closes: '2025-12-31' }, { link: 'javascript:alert(1)' }, { link: 'https://user:pass@example.test/' }, { category: 'other' }, { last_verified: '2999-01-01' }, { category: 'scholarships', visa: 'yes' }, { title: '  ' }]) {
+        await request(app).post('/v1/admin/radar').set(bearer(editorToken)).send({ ...listing, ...change }).expect(400);
+    }
+});
+
 test('member deactivation immediately removes access and audit rows reject edits', async () => {
     await request(app).patch('/v1/admin/members/' + memberId).set(bearer(editorToken)).send({ status: 'deactivated', reason: 'Test only' }).expect(403);
     await request(app).patch('/v1/admin/members/' + memberId).set(bearer(adminToken)).send({ status: 'deactivated', reason: 'Test only' }).expect(200);
