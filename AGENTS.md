@@ -2,7 +2,7 @@
 
 This folder is the new Society website monorepo. It is separate from `sees-tech-hub`, Testbench and the old `sees_website` checkout.
 
-- Use TypeScript Express for the backend, Next.js for the frontend and Render PostgreSQL. The user explicitly chose Express, not FastAPI or Supabase.
+- Use TypeScript Express for the backend, Next.js for the frontend and Neon PostgreSQL. The current deployment target is Vercel for both applications; the former Render plan is superseded. The user explicitly chose Express, not FastAPI or Supabase.
 - Keep page data loading and authorization on the server. Next.js pages call the API; client components are for interaction. Never move session credentials to localStorage.
 - Define colour values only in `apps/web/src/app/tokens.css`; use semantic CSS variables elsewhere. Fonts are Oswald and Inter from the supplied SEES guide.
 - Keep member and administrator identities separate. Verify roles in Express for every protected operation; client visibility is not authorization.
@@ -13,3 +13,6 @@ This folder is the new Society website monorepo. It is separate from `sees-tech-
 - Avoid new dependency installations when existing tools suffice. Never touch other projects' Docker containers or databases.
 - Keep `BUILD_STATUS.md` honest about unimplemented PRD requirements, provider integrations and deployment state.
 - Keep the public Header/Footer inside the `(site)` route group. Admin routes, including admin sign-in, use their own layout and must never inherit public website navigation or the public footer.
+
+- Documentation policy: user tutorials, setup/handover guides, plans and future authored documents stay local under ignored docs/. Never commit or force-add them. Keep root README.md minimal (no tutorial); AGENTS.md and upstream license notices are permitted repository metadata. Existing documentation history is not erased by ignoring files.
+- Cloudinary is the selected media provider. Keep its API secret backend-only; local handoff credentials belong in ignored apps/api/.env.cloudinary.

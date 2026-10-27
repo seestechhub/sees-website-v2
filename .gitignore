@@ -1,4 +1,4 @@
-# Local working notes; planning documents such as PRD.md remain versionable.
+# Local working notes.
 *.m.md
 
 # Credentials and local dependencies must not enter a future repository.
@@ -13,3 +13,14 @@ dist/
 *.log
 coverage/
 
+
+# Local-only documentation: never commit tutorials, handover guides or plans.
+/docs/
+/tutorials/
+/guides/
+/local-docs/
+*.md
+# Keep only the minimal repository identity, agent rules and upstream licences.
+!/README.md
+!AGENTS.md
+!**/LICENSE*.md
