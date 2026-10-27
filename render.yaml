@@ -1,3 +1,5 @@
+# HISTORICAL ONLY: superseded by Neon + Vercel on 25 October 2026.
+# Do not import this Blueprint for the current deployment; see docs/deployment/00-start-here.md.
 # Deployment template only. No services are created by saving this file.
 # Review paid plans/region with the owners before importing it into Render.
 services:
@@ -9,7 +11,7 @@ services:
     buildCommand: npm ci --include=dev --workspace @sees/api --include-workspace-root && node node_modules/typescript/bin/tsc -p apps/api/tsconfig.json
     startCommand: node apps/api/dist/server.js
     healthCheckPath: /ready
-    autoDeployTrigger: off
+    autoDeployTrigger: 'off'
     envVars:
       - key: NODE_VERSION
         value: 22.19.0
@@ -32,7 +34,7 @@ services:
     region: frankfurt
     buildCommand: npm ci --include=dev --workspace @sees/api --include-workspace-root && node node_modules/typescript/bin/tsc -p apps/api/tsconfig.json
     startCommand: node apps/api/dist/worker.js
-    autoDeployTrigger: off
+    autoDeployTrigger: 'off'
     envVars:
       - key: NODE_VERSION
         value: 22.19.0
@@ -58,5 +60,3 @@ databases:
     databaseName: sees
     user: sees_owner
     ipAllowList: []
-
-
