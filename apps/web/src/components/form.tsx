@@ -1,7 +1,7 @@
 'use client';
-import { Button } from '@/components/ui/button';
+import { Button } from './ui/button';
 import { useActionState, type ReactNode } from 'react';
-import type { FormState } from '@/app/actions';
+import type { FormState } from '../app/actions';
 export function ActionForm({ action, children, label, className = '' }: {
     action: (state: FormState, form: FormData) => Promise<FormState>;
     children: ReactNode;
